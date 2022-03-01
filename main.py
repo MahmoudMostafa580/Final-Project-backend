@@ -1,3 +1,5 @@
+import os
+
 from rembg.bg import remove
 import numpy as np
 import io
@@ -385,17 +387,19 @@ def sizes(front_image, side_image, person_height, category):
     shirt_guide = shirt_recommendation(chest_length, waist_length)
     t_shirt_guide = t_shirt_recommendation(chest_length, waist_length)
     trousers_guide = trouser_recommendation(waist_length, hip_length)
+    shorts_guide = shorts_recommendation(waist_length, hip_length)
     jackets_guide = jackets_recommendation(chest_length)
 
-    return shirt_guide, t_shirt_guide, trousers_guide, jackets_guide
+    return shirt_guide, t_shirt_guide, trousers_guide,shorts_guide, jackets_guide
 
 
 # Call function sizes
-shirts, t_shirts, trousers, jackets = sizes(front_image, side_image, input_person_height, category)
+shirts, t_shirts, trousers, shorts, jackets = sizes(front_image, side_image, input_person_height, category)
 
 print(f"shirts: {shirts}")
 print(f"t-shirts: {t_shirts}")
 print(f"trousers: {trousers}")
+print(f"shorts: {shorts}")
 print(f"jackets: {jackets}")
 
 app = Flask(__name__)
@@ -418,6 +422,9 @@ def upload():
 
         # Call function sizes
         shirts, t_shirts, trousers, jackets = sizes(fileName, fileName2, int(height), category)
+
+        os.remove(fileName)
+        os.remove(fileName2)
         return jsonify({
             "size guide": [shirts, t_shirts, trousers, jackets]
         })
