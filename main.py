@@ -7,11 +7,6 @@ from PIL import Image, ImageFile
 from flask import Flask, request, jsonify
 import werkzeug
 
-input_person_height = 174
-front_image = 'taha_front.jpg'
-side_image = 'taha_side.jpg'
-category = 'shirts'
-
 def out_image(input_image):
     # Uncomment the following line if working with truncated image formats (ex. JPEG / JPG)
     ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -424,14 +419,18 @@ def upload():
         # Call function sizes
         shirts, t_shirts, trousers, shorts, jackets = sizes(fileName, fileName2, height, category)
 
+        print(shirts, t_shirts, trousers, shorts, jackets)
+
         #remove images after extracting sizes
         if os.path.isfile(f"F:\python\pythonProject\{fileName}"):
             os.remove(fileName)
+            print("Front image deleted successfully")
         else:
             print("Error: file not found!")
 
         if os.path.isfile(f"F:\python\pythonProject\{fileName2}"):
             os.remove(fileName2)
+            print("Side image deleted successfully")
         else:
             print("Error: file not found!")
 
