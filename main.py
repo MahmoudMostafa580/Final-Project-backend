@@ -12,7 +12,6 @@ front_image = 'taha_front.jpg'
 side_image = 'taha_side.jpg'
 category = 'shirts'
 
-
 def out_image(input_image):
     # Uncomment the following line if working with truncated image formats (ex. JPEG / JPG)
     ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -38,14 +37,9 @@ def out_image(input_image):
     h2 = crop_2(converted)
     cropped_img = converted[h1:h2, 0:W]
 
-    # out = Image.fromarray(cropped_img)
-    # out.show()
-
     return cropped_img
 
-
 # crop image from top
-
 
 def crop(converted_image):
     for h in range(converted_image.shape[0] - 1):
@@ -53,16 +47,13 @@ def crop(converted_image):
             if np.any(converted_image[h, w, :] == 0):
                 return h
 
-
 # crop image from bottom
-
 
 def crop_2(converted_image):
     for h in range(converted_image.shape[0] - 1, 0, -1):
         for w in range(int(converted_image.shape[1] / 4), int(converted_image.shape[1] * (3 / 4)), 1):
             if np.any(converted_image[h, w, :] == 0):
                 return h
-
 
 def get_parts(image, person_height):
     (HEIGHT, WIDTH, CHANNEL) = image.shape
@@ -126,12 +117,10 @@ def get_parts(image, person_height):
     hip_line_length *= height_ratio
     return chest_line_length, waist_line_length, hip_line_length, upper_body_length, inside_leg_length
 
-
 def circum(front_size, side_size):
     pi = 3.14159
     m = (pi / 2) * (1.5 * (front_size + side_size) - (front_size * side_size) ** 0.5)
     return m
-
 
 def shirt_recommendation(chest_length, waist_length):
     chest_length = chest_length * (1 / 2.54)
@@ -153,6 +142,8 @@ def shirt_recommendation(chest_length, waist_length):
         recommendation_1 = '2XL'
     elif 53 <= chest_length <= 58:
         recommendation_1 = '3XL'
+    elif 58 <= chest_length <= 63:
+        recommendation_1 = '4XL'
     else:
         recommendation_1 = 'Can not recommend size'
 
@@ -172,6 +163,8 @@ def shirt_recommendation(chest_length, waist_length):
         recommendation_2 = '2XL'
     elif 48 <= waist_length <= 53:
         recommendation_2 = '3XL'
+    elif 53 <= waist_length <= 57:
+        recommendation_2 = '4XL'
     else:
         recommendation_2 = 'Can not recommend size'
 
@@ -181,7 +174,6 @@ def shirt_recommendation(chest_length, waist_length):
         recommended_size = recommendation_2
 
     return recommended_size
-
 
 def t_shirt_recommendation(chest_length, waist_length):
     chest_length = chest_length * (1 / 2.54)
@@ -203,6 +195,8 @@ def t_shirt_recommendation(chest_length, waist_length):
         recommendation_1 = '2XL'
     elif 52 < chest_length <= 58:
         recommendation_1 = '3XL'
+    elif 58 < chest_length <= 63:
+        recommendation_1 = '4XL'
     else:
         recommendation_1 = 'Can not recommend size'
 
@@ -222,13 +216,14 @@ def t_shirt_recommendation(chest_length, waist_length):
         recommendation_2 = '2XL'
     elif 48 <= waist_length <= 53:
         recommendation_2 = '3XL'
+    elif 53 <= waist_length <= 57:
+        recommendation_2 = '4XL'
     else:
         recommendation_2 = 'Can not recommend size'
 
     if recommendation_1 != recommendation_2:
         recommended_size = recommendation_1
         return recommended_size
-
 
 def trouser_recommendation(waist_length, hip_length):
     waist_length = waist_length * (1 / 2.54)
@@ -260,6 +255,10 @@ def trouser_recommendation(waist_length, hip_length):
         recommendation_1 = '48'
     elif 48 <= waist_length < 50:
         recommendation_1 = '50'
+    elif 50 <= waist_length < 52:
+        recommendation_1 = '52'
+    elif 52 <= waist_length < 54:
+        recommendation_1 = '54'
     else:
         recommendation_1 = 'Can not recommend size'
 
@@ -283,6 +282,16 @@ def trouser_recommendation(waist_length, hip_length):
         recommendation_2 = '42'
     elif 49 <= hip_length < 50:
         recommendation_2 = '44'
+    elif 50 <= hip_length < 52:
+        recommendation_2 = '46'
+    elif 52 <= hip_length < 54:
+        recommendation_2 = '48'
+    elif 54 <= hip_length < 56:
+        recommendation_2 = '50'
+    elif 56 <= hip_length < 58:
+        recommendation_2 = '52'
+    elif 58 <= hip_length < 60:
+        recommendation_2 = '54'
     else:
         recommendation_2 = 'Can not recommend size'
 
@@ -294,13 +303,12 @@ def trouser_recommendation(waist_length, hip_length):
 
     return recommended_size
 
-
 def shorts_recommendation(waist_length, hip_length):
     waist_length = waist_length * (1 / 2.54)
     hip_length = hip_length * (1 / 2.54)
 
     if waist_length < 26:
-        recommendation_1 = 'XXS'
+        recommendation_1 = '< XS'
     elif 26 <= waist_length < 29:
         recommendation_1 = 'XS'
     elif 29 <= waist_length < 32:
@@ -321,7 +329,7 @@ def shorts_recommendation(waist_length, hip_length):
         recommendation_1 = 'Can not recommend size'
 
     if hip_length < 32:
-        recommendation_2 = 'XXS'
+        recommendation_2 = '< XS'
     elif 32 <= hip_length < 35:
         recommendation_2 = 'XS'
     elif 35 <= hip_length < 37:
@@ -349,11 +357,12 @@ def shorts_recommendation(waist_length, hip_length):
 
     return recommended_size
 
-
 def jackets_recommendation(chest_length):
     chest_length = chest_length * (1 / 2.54)
 
-    if 35 <= chest_length <= 37:
+    if chest_length < 35:
+        recommendation_1 = '< XS'
+    elif 35 <= chest_length <= 37:
         recommendation_1 = 'XS'
     elif 37 < chest_length <= 39:
         recommendation_1 = 'S'
@@ -367,11 +376,12 @@ def jackets_recommendation(chest_length):
         recommendation_1 = '2XL'
     elif 48 < chest_length <= 50.3:
         recommendation_1 = '3XL'
+    elif 50.3 < chest_length <= 53:
+        recommendation_1 = '4XL'
     else:
         recommendation_1 = 'Can not recommend size'
 
     return recommendation_1
-
 
 def sizes(front_image, side_image, person_height, category):
     front_out = out_image(front_image)
@@ -396,7 +406,6 @@ def sizes(front_image, side_image, person_height, category):
 
 app = Flask(__name__)
 
-
 @app.route('/upload', methods=["POST"])
 def upload():
     if request.method == "POST":
@@ -415,6 +424,7 @@ def upload():
         # Call function sizes
         shirts, t_shirts, trousers, shorts, jackets = sizes(fileName, fileName2, height, category)
 
+        #remove images after extracting sizes
         if os.path.isfile(f"F:\python\pythonProject\{fileName}"):
             os.remove(fileName)
         else:
