@@ -1,40 +1,40 @@
 import os
 
-
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import werkzeug
-from size_recommendation import size_recommendation
+import cv2
+import size_recommendation as sr
+import virtual_fitting as vf
 
 app = Flask(__name__)
 
-@app.route('/upload', methods=["POST"])
-def upload():
+
+@app.route('/size_recommend', methods=["POST"])
+def size_recommend():
     if request.method == "POST":
         imageFile = request.files['image']
         fileName = werkzeug.utils.secure_filename(imageFile.filename)
         category = fileName.split('_')[0]
-        # print('category:', category)
         imageFile.save(fileName)
 
         imageFile2 = request.files['imageSide']
         fileName2 = werkzeug.utils.secure_filename(imageFile2.filename)
         height = float(fileName2.split('_')[0])
-        # print('height:', height)
         imageFile2.save(fileName2)
 
         # Call function sizes
-        shirts, t_shirts, trousers, shorts, jackets = size_recommendation(fileName, fileName2, height, category)
+        shirts, t_shirts, trousers, shorts, jackets = sr.size_recommendation(fileName, fileName2, height, category)
 
         print(shirts, t_shirts, trousers, shorts, jackets)
 
-        #remove images after extracting sizes
-        if os.path.isfile(f"F:\python\pythonProject\{fileName}"):
+        # remove images after extracting sizes
+        if os.path.isfile(f"F:\python\FinalProject\{fileName}"):
             os.remove(fileName)
             print("Front image deleted successfully")
         else:
             print("Error: file not found!")
 
-        if os.path.isfile(f"F:\python\pythonProject\{fileName2}"):
+        if os.path.isfile(f"F:\python\FinalProject\{fileName2}"):
             os.remove(fileName2)
             print("Side image deleted successfully")
         else:
@@ -43,6 +43,40 @@ def upload():
         return jsonify({
             "size": [shirts, t_shirts, trousers, shorts, jackets]
         })
+
+
+@app.route('/virtual', method=["POST"])
+def virtual():
+    if request.method == "POST":
+        first_cloth_image = request.files['first_image']
+        clothName_1 = werkzeug.utils.secure_filename(first_cloth_image.filename)
+        first_cloth_image.save(clothName_1)
+
+        category_1 = request.args.get('category1')
+
+        second_cloth_image = request.files['second_image']
+        clothName_2 = werkzeug.utils.secure_filename(second_cloth_image.filename)
+        second_cloth_image.save(clothName_2)
+
+        category_2 = request.args.get('category2')
+
+        result_img = vf.full_outfit(vf.model, clothName_1, category_1, clothName_2, category_2)
+        cv2.imwrite("result.png", result_img)
+
+        # remove images after processing
+        if os.path.isfile(f"F:\python\FinalProject\{clothName_1}"):
+            os.remove(clothName_1)
+            print("First image deleted successfully")
+        else:
+            print("Error: file not found!")
+
+        if os.path.isfile(f"F:\python\FinalProject\{clothName_2}"):
+            os.remove(clothName_2)
+            print("Second image deleted successfully")
+        else:
+            print("Error: file not found!")
+
+        return send_file("result.png", mimetype='image/png')
 
 
 if __name__ == "__main__":

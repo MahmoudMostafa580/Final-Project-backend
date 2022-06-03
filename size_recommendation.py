@@ -1,3 +1,4 @@
+import cv2
 from rembg.bg import remove
 import numpy as np
 import io
@@ -18,6 +19,7 @@ def remove_bg(input_image):
         img = img.transpose(Image.ROTATE_90)
 
     converted = np.array(img)
+    converted = cv2.resize(converted, (960, 1280))
     (H, W, D) = converted.shape
 
     # convert image to black and white
