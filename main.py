@@ -12,6 +12,7 @@ app = Flask(__name__)
 @app.route('/size_recommend', methods=["POST"])
 def size_recommend():
     if request.method == "POST":
+        #get images from client
         imageFile = request.files['image']
         fileName = werkzeug.utils.secure_filename(imageFile.filename)
         category = fileName.split('_')[0]
@@ -22,10 +23,8 @@ def size_recommend():
         height = float(fileName2.split('_')[0])
         imageFile2.save(fileName2)
 
-        # Call function sizes
+        # Call function size recommendation
         shirts, t_shirts, trousers, shorts, jackets = sr.size_recommendation(fileName, fileName2, height, category)
-
-        print(shirts, t_shirts, trousers, shorts, jackets)
 
         # remove images after extracting sizes
         if os.path.isfile(f"F:\python\FinalProject\{fileName}"):

@@ -4,12 +4,11 @@ import numpy as np
 import io
 from PIL import Image, ImageFile
 
-model_image = "model.png"
-model = cv2.imread(model_image)
 cloth_1 = "jeans_3.jpg"
 category_1 = "pants"
 cloth_2 = "t-shirt_1.png"
 category_2 = "t-shirt"
+model_index = 2
 
 
 def remove_bg(cloth_img):
@@ -118,8 +117,23 @@ def merge_images(model, c_no_bg, start_x, end_x, start_y, end_y):
     return model
 
 
+def change_model(model_index):
+    if model_index == 1:
+        model = 'models\model1.png'
+    elif model_index == 2:
+        model = 'models\model2.png'
+    elif model_index == 3:
+        model = 'models\model3.png'
+    elif model_index == 4:
+        model = 'models\model4.png'
+    elif model_index == 5:
+        model = 'models\model5.png'
+    elif model_index == 6:
+        model = 'models\model6.png'
+    return model
+
+
 def virtual_fitting(model, cloth_image, category):
-    #model = cv2.imread(model_image)
     c_no_bg, c_mask = remove_bg(cloth_image)
     upper_length, t_shirt_width, t_shirt_x, shirt_width, shirt_x, lower_length, pants_width, pants_x, hip_height, waist_height, shorts_length = get_model_parts()
     if category == "t-shirt":
@@ -156,14 +170,16 @@ def virtual_fitting(model, cloth_image, category):
     return result
 
 
-def full_outfit(model_img, first_cloth, first_category, second_cloth, second_category):
+def full_outfit(model_index, first_cloth, first_category, second_cloth, second_category):
+    model = change_model(model_index)
+    model_img = cv2.imread(model)
     result_1 = virtual_fitting(model_img, first_cloth, first_category)
     final_result = virtual_fitting(result_1, second_cloth, second_category)
 
     return final_result
 
 
-result = full_outfit(model_img=model, first_cloth=cloth_1, first_category=category_1, second_cloth=cloth_2,
+result = full_outfit(model_index=model_index, first_cloth=cloth_1, first_category=category_1, second_cloth=cloth_2,
                      second_category=category_2)
 
 cv2.imshow("out", result)
