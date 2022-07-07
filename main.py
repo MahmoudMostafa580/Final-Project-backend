@@ -8,7 +8,7 @@ import virtual_fitting as vf
 
 app = Flask(__name__)
 
-
+'''
 @app.route('/size_recommend', methods=["POST"])
 def size_recommend():
     if request.method == "POST":
@@ -75,8 +75,11 @@ def virtual():
         else:
             print("Error: file not found!")
 
-        return send_file("result.png", mimetype='image/png')
+        return send_file("result.png", mimetype='image/png')'''
 
+@app.route("/")
+def index():
+    return "<h1> welcome to my flask server !</h1>"
 
 if __name__ == "__main__":
     app.run(debug=False, port=4000)
