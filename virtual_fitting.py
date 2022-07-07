@@ -3,12 +3,15 @@ from rembg.bg import remove
 import numpy as np
 import io
 from PIL import Image, ImageFile
+import ray
 
-cloth_1 = "jeans_3.jpg"
-category_1 = "pants"
-cloth_2 = "t-shirt_1.png"
+ray.init(num_cpus=4, num_gpus=1)
+
+cloth_1 = "short_1.jpg"
+category_1 = "shorts"
+cloth_2 = "t-shirt_2.jpg"
 category_2 = "t-shirt"
-model_index = 2
+model_index = 4
 
 
 def remove_bg(cloth_img):
@@ -35,16 +38,19 @@ def convert_crop_cloth(img):
     non_black_pixels_mask = np.any(img != [0, 0, 0], axis=-1)
     img[black_pixels_mask] = [255, 255, 255]
     img[non_black_pixels_mask] = [0, 0, 0]
-    s_t = crop_top(img)
-    s_b = crop_bottom(img)
-    s_l = crop_left(img)
-    s_r = crop_right(img)
+
+    t = crop_top.remote(img)
+    b = crop_bottom.remote(img)
+    l = crop_left.remote(img)
+    r = crop_right.remote(img)
+    s_t, s_b, s_l, s_r = ray.get([t, b, l, r])
     img_mask = img[s_t:s_b, s_l:s_r]
 
     return img_mask, s_t, s_b, s_l, s_r
 
 
 # crop image from top
+@ray.remote
 def crop_top(converted_image):
     for h in range(0, converted_image.shape[0] - 1, 2):
         for w in range(int(converted_image.shape[1] / 8), int(converted_image.shape[1] * (7 / 8)), 1):
@@ -53,6 +59,7 @@ def crop_top(converted_image):
 
 
 # crop image from bottom
+@ray.remote
 def crop_bottom(converted_image):
     for h in range(converted_image.shape[0] - 1, 0, -1):
         for w in range(int(converted_image.shape[1] / 8), int(converted_image.shape[1] * (7 / 8)), 1):
@@ -61,6 +68,7 @@ def crop_bottom(converted_image):
 
 
 # crop image from left
+@ray.remote
 def crop_left(converted_image):
     for w in range(converted_image.shape[1]):
         for h in range(converted_image.shape[0]):
@@ -69,6 +77,7 @@ def crop_left(converted_image):
 
 
 # crop image from top
+@ray.remote
 def crop_right(converted_image):
     for w in range(converted_image.shape[1] - 1, 0, -2):
         for h in range(converted_image.shape[0]):
@@ -160,8 +169,8 @@ def virtual_fitting(model, cloth_image, category):
         end_y = waist_height + c_no_bg.shape[0]
         result = merge_images(model, c_no_bg, start_x, end_x, start_y, end_y)
     elif category == 'shorts':
-        c_no_bg = cv2.resize(c_no_bg, (pants_width + 20, shorts_length))
-        start_x = pants_x - 10
+        c_no_bg = cv2.resize(c_no_bg, (pants_width, shorts_length))
+        start_x = pants_x
         end_x = start_x + c_no_bg.shape[1]
         start_y = waist_height
         end_y = waist_height + c_no_bg.shape[0]
@@ -173,7 +182,10 @@ def virtual_fitting(model, cloth_image, category):
 def full_outfit(model_index, first_cloth, first_category, second_cloth, second_category):
     model = change_model(model_index)
     model_img = cv2.imread(model)
+    model_img = cv2.resize(model_img, (601, 768))
     result_1 = virtual_fitting(model_img, first_cloth, first_category)
+    cv2.imshow('test', result_1)
+    cv2.waitKey(0)
     final_result = virtual_fitting(result_1, second_cloth, second_category)
 
     return final_result
