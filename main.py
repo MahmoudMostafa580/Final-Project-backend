@@ -79,7 +79,7 @@ def virtual():
 
 @app.route("/")
 def index():
-    return "<h1> Welcome to my flask server !</h1>"
+    return "<h1> Welcome to my Flask server !</h1>"
 
 if __name__ == "__main__":
     app.run(debug=False, port=4000)
