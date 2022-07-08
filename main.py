@@ -4,7 +4,8 @@ from flask import Flask, request, jsonify, send_file
 import werkzeug
 import cv2
 import size_recommendation as sr
-#import virtual_fitting as vf
+
+# import virtual_fitting as vf
 
 app = Flask(__name__)
 
@@ -77,9 +78,11 @@ def virtual():
 
         return send_file("result.png", mimetype='image/png')'''
 
+
 @app.route("/")
 def index():
     return "<h1> Welcome to my Flask server !</h1>"
 
-if __name__ == "__main__":
-    app.run(debug=False, port=4000)
+
+'''if __name__ == "__main__":
+    app.run(debug=False, port=4000)'''
