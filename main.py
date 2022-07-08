@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, request, jsonify, send_file
 import werkzeug
+from werkzeug.serving import WSGIRequestHandler
 import cv2
 import size_recommendation as sr
 
@@ -85,4 +86,5 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=4000)
+    WSGIRequestHandler.protocol_version = "HTTP/1.1"
+    app.run(host='0.0.0.0', port=5000)
