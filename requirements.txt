@@ -5,3 +5,4 @@ Pillow==9.0.0
 ray==1.13.0
 rembg==2.0.5
 Werkzeug==2.0.3
+gunicorn
