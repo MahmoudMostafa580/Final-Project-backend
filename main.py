@@ -84,5 +84,5 @@ def index():
     return "<h1> Welcome to my Flask server !</h1>"
 
 
-'''if __name__ == "__main__":
-    app.run(debug=False, port=4000)'''
+if __name__ == "__main__":
+    app.run(debug=False, port=4000)
