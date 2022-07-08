@@ -1,10 +1,10 @@
 import os
 
 from flask import Flask, request, jsonify, send_file
-import werkzeug
+#import werkzeug
 from werkzeug.serving import WSGIRequestHandler
 #import cv2
-import size_recommendation as sr
+#import size_recommendation as sr
 
 # import virtual_fitting as vf
 
