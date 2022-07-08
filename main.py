@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, send_file
 import werkzeug
 import cv2
 import size_recommendation as sr
-import virtual_fitting as vf
+#import virtual_fitting as vf
 
 app = Flask(__name__)
 
