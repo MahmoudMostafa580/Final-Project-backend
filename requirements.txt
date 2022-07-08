@@ -1,6 +1,6 @@
 Flask==2.0.3
 numpy==1.21.5
-opencv_python==4.5.5.62
+opencv_python-headless==4.5.5.62
 Pillow==9.0.0
 ray==1.13.0
 rembg==2.0.5
