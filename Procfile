@@ -1,1 +1,1 @@
-web gunicorn FinalProject:main
+web gunicorn main:main
