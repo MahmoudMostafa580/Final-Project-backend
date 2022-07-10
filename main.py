@@ -10,7 +10,7 @@ import size_recommendation as sr
 
 app = Flask(__name__)
 
-
+'''
 @app.route('/size_recommend', methods=["POST"])
 def size_recommend():
     if request.method == "POST":
@@ -46,7 +46,7 @@ def size_recommend():
         })
 
 
-'''@app.route('/virtual', method=["POST"])
+@app.route('/virtual', method=["POST"])
 def virtual():
     if request.method == "POST":
         first_cloth_image = request.files['image1']
@@ -77,12 +77,12 @@ def virtual():
         else:
             print("Error: file not found!")
 
-        return send_file("result.png", mimetype='image/png')
+        return send_file("result.png", mimetype='image/png')'''
 
 
 @app.route("/")
 def index():
-    return "<h1> Welcome to my Flask server !</h1>"'''
+    return "<h1> Welcome to my Flask server !</h1>"
 
 
 if __name__ == "__main__":

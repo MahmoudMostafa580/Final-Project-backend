@@ -3,9 +3,9 @@ from rembg.bg import remove
 import numpy as np
 import io
 from PIL import Image, ImageFile
-import ray
+#import ray
 
-ray.init(num_cpus=4, num_gpus=1)
+#ray.init(num_cpus=4, num_gpus=1)
 
 '''cloth_1 = "short_1.jpg"
 category_1 = "shorts"
@@ -50,7 +50,7 @@ def convert_crop_cloth(img):
 
 
 # crop image from top
-@ray.remote
+#@ray.remote
 def crop_top(converted_image):
     for h in range(0, converted_image.shape[0] - 1, 2):
         for w in range(int(converted_image.shape[1] / 8), int(converted_image.shape[1] * (7 / 8)), 1):
@@ -59,7 +59,7 @@ def crop_top(converted_image):
 
 
 # crop image from bottom
-@ray.remote
+#@ray.remote
 def crop_bottom(converted_image):
     for h in range(converted_image.shape[0] - 1, 0, -1):
         for w in range(int(converted_image.shape[1] / 8), int(converted_image.shape[1] * (7 / 8)), 1):
@@ -68,7 +68,7 @@ def crop_bottom(converted_image):
 
 
 # crop image from left
-@ray.remote
+#@ray.remote
 def crop_left(converted_image):
     for w in range(converted_image.shape[1]):
         for h in range(converted_image.shape[0]):
@@ -77,7 +77,7 @@ def crop_left(converted_image):
 
 
 # crop image from top
-@ray.remote
+#@ray.remote
 def crop_right(converted_image):
     for w in range(converted_image.shape[1] - 1, 0, -2):
         for h in range(converted_image.shape[0]):
