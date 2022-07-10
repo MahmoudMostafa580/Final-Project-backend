@@ -46,7 +46,7 @@ def size_recommend():
         })
 
 
-@app.route('/virtual', method=["POST"])
+'''@app.route('/virtual', method=["POST"])
 def virtual():
     if request.method == "POST":
         first_cloth_image = request.files['image1']
@@ -82,7 +82,7 @@ def virtual():
 
 @app.route("/")
 def index():
-    return "<h1> Welcome to my Flask server !</h1>"
+    return "<h1> Welcome to my Flask server !</h1>"'''
 
 
 if __name__ == "__main__":
