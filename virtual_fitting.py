@@ -7,11 +7,11 @@ import ray
 
 ray.init(num_cpus=4, num_gpus=1)
 
-cloth_1 = "short_1.jpg"
+'''cloth_1 = "short_1.jpg"
 category_1 = "shorts"
 cloth_2 = "t-shirt_2.jpg"
 category_2 = "t-shirt"
-model_index = 4
+model_index = 4'''
 
 
 def remove_bg(cloth_img):
@@ -191,10 +191,10 @@ def full_outfit(model_index, first_cloth, first_category, second_cloth, second_c
     return final_result
 
 
-result = full_outfit(model_index=model_index, first_cloth=cloth_1, first_category=category_1, second_cloth=cloth_2,
+'''result = full_outfit(model_index=model_index, first_cloth=cloth_1, first_category=category_1, second_cloth=cloth_2,
                      second_category=category_2)
 
 cv2.imshow("out", result)
 cv2.imwrite("out.png", result)
 cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv2.destroyAllWindows()'''

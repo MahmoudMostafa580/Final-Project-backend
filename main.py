@@ -6,11 +6,11 @@ from werkzeug.serving import WSGIRequestHandler
 import cv2
 import size_recommendation as sr
 
-# import virtual_fitting as vf
+import virtual_fitting as vf
 
 app = Flask(__name__)
 
-'''
+
 @app.route('/size_recommend', methods=["POST"])
 def size_recommend():
     if request.method == "POST":
@@ -49,13 +49,13 @@ def size_recommend():
 @app.route('/virtual', method=["POST"])
 def virtual():
     if request.method == "POST":
-        first_cloth_image = request.files['first_image']
+        first_cloth_image = request.files['image1']
         clothName_1 = werkzeug.utils.secure_filename(first_cloth_image.filename)
         first_cloth_image.save(clothName_1)
 
         category_1 = request.args.get('category1')
 
-        second_cloth_image = request.files['second_image']
+        second_cloth_image = request.files['image2']
         clothName_2 = werkzeug.utils.secure_filename(second_cloth_image.filename)
         second_cloth_image.save(clothName_2)
 
@@ -77,7 +77,7 @@ def virtual():
         else:
             print("Error: file not found!")
 
-        return send_file("result.png", mimetype='image/png')'''
+        return send_file("result.png", mimetype='image/png')
 
 
 @app.route("/")
