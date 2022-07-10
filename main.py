@@ -6,7 +6,7 @@ from werkzeug.serving import WSGIRequestHandler
 import cv2
 import size_recommendation as sr
 
-import virtual_fitting as vf
+#import virtual_fitting as vf
 
 app = Flask(__name__)
 
