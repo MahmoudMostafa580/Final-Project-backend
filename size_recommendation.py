@@ -14,6 +14,7 @@ def remove_bg(input_image):
     result = remove(f)
     img = Image.open(io.BytesIO(result)).convert("RGB")
 
+    # transpose image if height < width
     width, height = img.size
     if height < width:
         img = img.transpose(Image.ROTATE_90)
@@ -33,25 +34,27 @@ def remove_bg(input_image):
 
     return cropped_img
 
-# crop image from top
 
+# crop image from top
 def crop(converted_image):
     for h in range(converted_image.shape[0] - 1):
         for w in range(int(converted_image.shape[1] / 4), int(converted_image.shape[1] * (3 / 4)), 1):
             if np.any(converted_image[h, w, :] == 0):
                 return h
 
-# crop image from bottom
 
+# crop image from bottom
 def crop_2(converted_image):
     for h in range(converted_image.shape[0] - 1, 0, -1):
         for w in range(int(converted_image.shape[1] / 4), int(converted_image.shape[1] * (3 / 4)), 1):
             if np.any(converted_image[h, w, :] == 0):
                 return h
 
+
+# Extract human body parts from image
 def get_parts(image, person_height):
     (HEIGHT, WIDTH, CHANNEL) = image.shape
-    # height ration between original height of person & height of image
+    # height ratio between original height of person & height of image
     height_ratio = person_height / HEIGHT
 
     # calculate start & end of the 8 parts of human body
@@ -79,9 +82,7 @@ def get_parts(image, person_height):
     # part8_start = part7_end + 1
     part8_end = HEIGHT
 
-    # shoulder_line_height = round(part2_start + ((part2_end - part2_start) / 2))
-
-    # calculate needed lengths
+    # get parts heights
     chest_line_height = round(part3_start + ((part3_end - part3_start) / 4))
     waist_line_height = round(part4_start + ((part4_end - part4_start) / 4))
     hip_line_height = part5_start
@@ -89,21 +90,25 @@ def get_parts(image, person_height):
                         (part2_start + ((part2_end - part2_start) / 3))
     inside_leg_length = part8_end - (part5_start + ((part5_end - part5_start) / 2))
 
+    # calculate chest length
     chest_line_length = 0
     for i in range(WIDTH - 1):
         if np.any(image[chest_line_height, i, :] == 0):
             chest_line_length = chest_line_length + 1
 
+    # calculate waist length
     waist_line_length = 0
     for i in range(WIDTH - 1):
         if np.any(image[waist_line_height, i, :] == 0):
             waist_line_length = waist_line_length + 1
 
+    # calculate hip length
     hip_line_length = 0
     for i in range(WIDTH - 1):
         if np.any(image[hip_line_height, i, :] == 0):
             hip_line_length = hip_line_length + 1
 
+    # get body measurements in centimeter
     chest_line_length *= height_ratio
     waist_line_length *= height_ratio
     upper_body_length *= height_ratio
@@ -111,11 +116,15 @@ def get_parts(image, person_height):
     hip_line_length *= height_ratio
     return chest_line_length, waist_line_length, hip_line_length, upper_body_length, inside_leg_length
 
+
+# calculate circumferene from frontal and side image
 def circum(front_size, side_size):
     pi = 3.14159
     m = (pi / 2) * (1.5 * (front_size + side_size) - (front_size * side_size) ** 0.5)
     return m
 
+
+# recommend size for each category
 def shirt_recommendation(chest_length, waist_length):
     chest_length = chest_length * (1 / 2.54)
     waist_length = waist_length * (1 / 2.54)
@@ -169,6 +178,7 @@ def shirt_recommendation(chest_length, waist_length):
 
     return recommended_size
 
+
 def t_shirt_recommendation(chest_length, waist_length):
     chest_length = chest_length * (1 / 2.54)
     waist_length = waist_length * (1 / 2.54)
@@ -218,6 +228,7 @@ def t_shirt_recommendation(chest_length, waist_length):
     if recommendation_1 != recommendation_2:
         recommended_size = recommendation_1
         return recommended_size
+
 
 def trouser_recommendation(waist_length, hip_length):
     waist_length = waist_length * (1 / 2.54)
@@ -297,6 +308,7 @@ def trouser_recommendation(waist_length, hip_length):
 
     return recommended_size
 
+
 def shorts_recommendation(waist_length, hip_length):
     waist_length = waist_length * (1 / 2.54)
     hip_length = hip_length * (1 / 2.54)
@@ -351,6 +363,7 @@ def shorts_recommendation(waist_length, hip_length):
 
     return recommended_size
 
+
 def jackets_recommendation(chest_length):
     chest_length = chest_length * (1 / 2.54)
 
@@ -377,6 +390,8 @@ def jackets_recommendation(chest_length):
 
     return recommendation_1
 
+
+# Main function
 def size_recommendation(front_image, side_image, person_height, category):
     front_out = remove_bg(front_image)
     side_out = remove_bg(side_image)

@@ -5,16 +5,15 @@ import werkzeug
 from werkzeug.serving import WSGIRequestHandler
 import cv2
 import size_recommendation as sr
-
-#import virtual_fitting as vf
+import virtual_fitting as vf
 
 app = Flask(__name__)
 
-'''
+
 @app.route('/size_recommend', methods=["POST"])
 def size_recommend():
     if request.method == "POST":
-        #get images from client
+        # get images from client
         imageFile = request.files['image']
         fileName = werkzeug.utils.secure_filename(imageFile.filename)
         category = fileName.split('_')[0]
@@ -46,23 +45,30 @@ def size_recommend():
         })
 
 
-@app.route('/virtual', method=["POST"])
+@app.route('/virtual', methods=["POST"])
 def virtual():
     if request.method == "POST":
         first_cloth_image = request.files['image1']
         clothName_1 = werkzeug.utils.secure_filename(first_cloth_image.filename)
         first_cloth_image.save(clothName_1)
 
-        category_1 = request.args.get('category1')
+        category_1 = request.form.get('category1', type=str)
 
         second_cloth_image = request.files['image2']
         clothName_2 = werkzeug.utils.secure_filename(second_cloth_image.filename)
         second_cloth_image.save(clothName_2)
 
-        category_2 = request.args.get('category2')
+        category_2 = request.form.get('category2', type=str)
+        model_index = request.form.get('model_index', type=int)
 
-        result_img = vf.full_outfit(vf.model, clothName_1, category_1, clothName_2, category_2)
+        print("cat1", category_1)
+        print("cat2", category_2)
+        print("model", model_index)
+
+        #Call function full_outfit with needed arguments
+        result_img = vf.full_outfit(model_index, clothName_1, category_1, clothName_2, category_2)
         cv2.imwrite("result.png", result_img)
+
 
         # remove images after processing
         if os.path.isfile(f"F:\python\FinalProject\{clothName_1}"):
@@ -77,12 +83,8 @@ def virtual():
         else:
             print("Error: file not found!")
 
-        return send_file("result.png", mimetype='image/png')'''
-
-
-@app.route("/")
-def index():
-    return "<h1> Welcome to my Flask server !</h1>"
+        #send result image to client side (user app)
+        return send_file("result.png", mimetype='image/png')
 
 
 if __name__ == "__main__":
